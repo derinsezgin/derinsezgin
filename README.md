@@ -1,4 +1,7 @@
- 👋 Hello. 
+
+<img src="https://biomedicalodyssey.blogs.hopkinsmedicine.org/files/2020/02/programming-code-window-GettyImages-1124838925_640-920x632.jpg" alt="photo">
+
+👋 Hello. 
  <br/>
  🤓 I'am Software Engineer👨‍💻  
  <ul> 
