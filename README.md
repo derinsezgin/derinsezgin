@@ -1,6 +1,6 @@
  👋 Hello. 
  <br/>
- 🤓 I'am Software Engineering 
+ 🤓 I'am Software Engineer👨‍💻  
  <ul> 
  <li>I'am working as a Software Engineer contributing to Frontend for building Web applications </li>
  <li>Explore technical content writing </li>
