@@ -1,6 +1,6 @@
 
 
-<img src="https://tiptopbrain.com/wp-content/uploads/2020/05/coding-on-pc-icon.png" alt="photo">
+<img src="https://tiptopbrain.com/wp-content/uploads/2020/05/coding-on-pc-icon.png" width="20" height="20" alt="photo">
 
 👋 Hello. 
  <br/>
