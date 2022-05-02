@@ -1,6 +1,6 @@
 
 
-<img src="https://biomedicalodyssey.blogs.hopkinsmedicine.org/files/2020/02/programming-code-window-GettyImages-1124838925_640-920x632.jpg" style="widht:30%,height:30%" alt="photo">
+<img src="https://biomedicalodyssey.blogs.hopkinsmedicine.org/files/2020/02/programming-code-window-GettyImages-1124838925_640-920x632.jpg" style="widht:20%,height:20%" alt="photo">
 
 👋 Hello. 
  <br/>
