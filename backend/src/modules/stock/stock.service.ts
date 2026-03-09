@@ -52,20 +52,30 @@ export async function createMovement(data: {
   if (!product) throw new Error('Product not found');
 
   const quantityDecimal = new Decimal(data.quantity);
-  const isOutflow = data.type === StockMovementType.OUT;
+  const currentStock = new Decimal(product.currentStock);
 
-  if (isOutflow && new Decimal(product.currentStock).lessThan(quantityDecimal)) {
-    throw new Error('Insufficient stock');
+  // Validate and compute stock delta
+  let stockDelta: Decimal;
+  if (data.type === StockMovementType.OUT) {
+    if (currentStock.lessThan(quantityDecimal)) {
+      throw new Error(`Insufficient stock (current: ${currentStock}, requested: ${quantityDecimal})`);
+    }
+    stockDelta = quantityDecimal.negated();
+  } else if (data.type === StockMovementType.ADJUSTMENT) {
+    // ADJUSTMENT: quantity is the new absolute stock value (cycle count)
+    if (quantityDecimal.lessThan(0)) throw new Error('Adjustment quantity cannot be negative');
+    stockDelta = quantityDecimal.minus(currentStock);
+  } else {
+    // IN, RETURN: add to stock
+    stockDelta = quantityDecimal;
   }
-
-  const stockDelta = isOutflow ? quantityDecimal.negated() : quantityDecimal;
 
   const [movement] = await prisma.$transaction([
     prisma.stockMovement.create({
       data: {
         productId: data.productId,
         type: data.type,
-        quantity: data.type === 'ADJUSTMENT' ? quantityDecimal : quantityDecimal,
+        quantity: quantityDecimal,
         unitPrice: data.unitPrice,
         totalValue: data.unitPrice ? quantityDecimal.times(data.unitPrice) : undefined,
         reference: data.reference,
@@ -79,13 +89,7 @@ export async function createMovement(data: {
     }),
     prisma.product.update({
       where: { id: data.productId },
-      data: {
-        currentStock: {
-          increment: data.type === StockMovementType.ADJUSTMENT
-            ? quantityDecimal.minus(product.currentStock).toNumber()
-            : stockDelta.toNumber(),
-        },
-      },
+      data: { currentStock: { increment: stockDelta.toNumber() } },
     }),
   ]);
 

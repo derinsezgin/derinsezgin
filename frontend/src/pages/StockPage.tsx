@@ -54,7 +54,7 @@ export function StockPage() {
     queryFn: () => productsApi.list({ limit: 50, search: productSearch || undefined }).then((r) => r.data.data),
   });
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<MovementForm>({
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<MovementForm>({
     resolver: zodResolver(movementSchema),
     defaultValues: { type: 'IN' },
   });
@@ -200,8 +200,10 @@ export function StockPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Quantity *</label>
-                    <input {...register('quantity')} type="number" step="0.001" className="input" />
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      {watch('type') === 'ADJUSTMENT' ? 'New Stock Quantity (absolute) *' : 'Quantity *'}
+                    </label>
+                    <input {...register('quantity')} type="number" step="0.001" min="0" className="input" />
                     {errors.quantity && <p className="text-xs text-red-600 mt-0.5">{errors.quantity.message}</p>}
                   </div>
                 </div>
