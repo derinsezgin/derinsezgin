@@ -41,13 +41,13 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-900">Gösterge Paneli</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Active Products" value={stats.activeProducts} icon={Package} color="bg-blue-500" />
-        <StatCard label="Categories" value={stats.totalCategories} icon={Tags} color="bg-purple-500" />
-        <StatCard label="Active Suppliers" value={stats.totalSuppliers} icon={Truck} color="bg-green-500" />
-        <StatCard label="Open Orders" value={stats.openOrders} icon={ShoppingCart} color="bg-orange-500" />
+        <StatCard label="Aktif Ürünler" value={stats.activeProducts} icon={Package} color="bg-blue-500" />
+        <StatCard label="Kategoriler" value={stats.totalCategories} icon={Tags} color="bg-purple-500" />
+        <StatCard label="Aktif Tedarikçiler" value={stats.totalSuppliers} icon={Truck} color="bg-green-500" />
+        <StatCard label="Açık Siparişler" value={stats.openOrders} icon={ShoppingCart} color="bg-orange-500" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -56,11 +56,11 @@ export function DashboardPage() {
           <div className="flex items-center gap-2 mb-4">
             <AlertTriangle className="w-5 h-5 text-red-500" />
             <h2 className="font-semibold text-gray-900">
-              Low Stock ({stats.lowStockCount})
+              Düşük Stok ({stats.lowStockCount})
             </h2>
           </div>
           {stats.lowStockProducts.length === 0 ? (
-            <p className="text-sm text-gray-500">All products have sufficient stock.</p>
+            <p className="text-sm text-gray-500">Tüm ürünlerin stoğu yeterli.</p>
           ) : (
             <div className="space-y-2">
               {stats.lowStockProducts.map((p) => (
@@ -85,17 +85,17 @@ export function DashboardPage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <TrendingDown className="w-5 h-5 text-blue-500" />
-            <h2 className="font-semibold text-gray-900">Recent Movements</h2>
+            <h2 className="font-semibold text-gray-900">Son Hareketler</h2>
           </div>
           {stats.recentMovements.length === 0 ? (
-            <p className="text-sm text-gray-500">No recent movements.</p>
+            <p className="text-sm text-gray-500">Son hareket bulunmuyor.</p>
           ) : (
             <div className="space-y-2">
               {stats.recentMovements.map((m) => (
                 <div key={m.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                   <div>
                     <p className="text-sm font-medium text-gray-900">{m.product?.name}</p>
-                    <p className="text-xs text-gray-500">by {m.user?.name}</p>
+                    <p className="text-xs text-gray-500">{m.user?.name} tarafından</p>
                   </div>
                   <div className="text-right">
                     <span
@@ -120,7 +120,7 @@ export function DashboardPage() {
 
       <div className="card">
         <p className="text-sm text-gray-500">
-          Total stock value:{' '}
+          Toplam stok değeri:{' '}
           <strong className="text-gray-900">
             {new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(
               Number(stats.totalStockValue)

@@ -39,7 +39,7 @@ export function ReportsPage() {
 
   const stockValueByCategory: Record<string, number> = {};
   stockData?.forEach((p) => {
-    const cat = p.category ?? 'Uncategorized';
+    const cat = p.category ?? 'Kategorisiz';
     stockValueByCategory[cat] = (stockValueByCategory[cat] || 0) + p.stockValue;
   });
   const pieData = Object.entries(stockValueByCategory).map(([name, value]) => ({ name, value: Math.round(value * 100) / 100 }));
@@ -49,26 +49,26 @@ export function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Reports</h1>
+      <h1 className="text-2xl font-bold">Raporlar</h1>
 
       {/* Summary KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="card">
-          <p className="text-sm text-gray-500">Total Products</p>
+          <p className="text-sm text-gray-500">Toplam Ürünler</p>
           <p className="text-2xl font-bold">{stockData?.length ?? 0}</p>
         </div>
         <div className="card">
-          <p className="text-sm text-gray-500">Total Stock Value</p>
+          <p className="text-sm text-gray-500">Toplam Stok Değeri</p>
           <p className="text-2xl font-bold">
             {new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(totalValue)}
           </p>
         </div>
         <div className="card">
-          <p className="text-sm text-gray-500">Low Stock Items</p>
+          <p className="text-sm text-gray-500">Düşük Stoklu Ürünler</p>
           <p className={`text-2xl font-bold ${lowStockCount > 0 ? 'text-red-600' : 'text-green-600'}`}>{lowStockCount}</p>
         </div>
         <div className="card">
-          <p className="text-sm text-gray-500">Active Suppliers</p>
+          <p className="text-sm text-gray-500">Aktif Tedarikçiler</p>
           <p className="text-2xl font-bold">{supplierData?.length ?? 0}</p>
         </div>
       </div>
@@ -76,7 +76,7 @@ export function ReportsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top 10 by stock level */}
         <div className="card">
-          <h2 className="font-semibold text-gray-900 mb-4">Top 10 Products by Stock</h2>
+          <h2 className="font-semibold text-gray-900 mb-4">Stoğa Göre İlk 10 Ürün</h2>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={top10Stock} margin={{ top: 0, right: 0, bottom: 60, left: 0 }}>
               <XAxis dataKey="name" tick={{ fontSize: 10 }} angle={-45} textAnchor="end" interval={0} />
@@ -89,7 +89,7 @@ export function ReportsPage() {
 
         {/* Stock value by category */}
         <div className="card">
-          <h2 className="font-semibold text-gray-900 mb-4">Stock Value by Category</h2>
+          <h2 className="font-semibold text-gray-900 mb-4">Kategoriye Göre Stok Değeri</h2>
           {pieData.length > 0 ? (
             <ResponsiveContainer width="100%" height={260}>
               <PieChart>
@@ -103,23 +103,23 @@ export function ReportsPage() {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-gray-400 text-sm">No data.</p>
+            <p className="text-gray-400 text-sm">Veri yok.</p>
           )}
         </div>
       </div>
 
       {/* Supplier table */}
       <div className="card">
-        <h2 className="font-semibold text-gray-900 mb-4">Supplier Performance</h2>
+        <h2 className="font-semibold text-gray-900 mb-4">Tedarikçi Performansı</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-xs text-gray-500 uppercase bg-gray-50">
               <tr>
-                <th className="px-4 py-2 text-left">Supplier</th>
-                <th className="px-4 py-2 text-right">Total Orders</th>
-                <th className="px-4 py-2 text-right">Completed</th>
-                <th className="px-4 py-2 text-right">Total Spend</th>
-                <th className="px-4 py-2 text-right">Products</th>
+                <th className="px-4 py-2 text-left">Tedarikçi</th>
+                <th className="px-4 py-2 text-right">Toplam Sipariş</th>
+                <th className="px-4 py-2 text-right">Tamamlanan</th>
+                <th className="px-4 py-2 text-right">Toplam Harcama</th>
+                <th className="px-4 py-2 text-right">Ürünler</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -135,7 +135,7 @@ export function ReportsPage() {
                 </tr>
               ))}
               {!supplierData?.length && (
-                <tr><td colSpan={5} className="px-4 py-6 text-center text-gray-400">No data.</td></tr>
+                <tr><td colSpan={5} className="px-4 py-6 text-center text-gray-400">Veri yok.</td></tr>
               )}
             </tbody>
           </table>
@@ -145,16 +145,16 @@ export function ReportsPage() {
       {/* Low stock table */}
       {lowStockCount > 0 && (
         <div className="card">
-          <h2 className="font-semibold text-red-600 mb-4">Low Stock Products ({lowStockCount})</h2>
+          <h2 className="font-semibold text-red-600 mb-4">Düşük Stoklu Ürünler ({lowStockCount})</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="text-xs text-gray-500 uppercase bg-gray-50">
                 <tr>
-                  <th className="px-4 py-2 text-left">Product</th>
+                  <th className="px-4 py-2 text-left">Ürün</th>
                   <th className="px-4 py-2 text-left">SKU</th>
-                  <th className="px-4 py-2 text-left">Category</th>
-                  <th className="px-4 py-2 text-right">Current Stock</th>
-                  <th className="px-4 py-2 text-right">Min Level</th>
+                  <th className="px-4 py-2 text-left">Kategori</th>
+                  <th className="px-4 py-2 text-right">Mevcut Stok</th>
+                  <th className="px-4 py-2 text-right">Min. Seviye</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">

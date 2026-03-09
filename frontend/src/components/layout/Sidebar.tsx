@@ -14,14 +14,14 @@ import { clsx } from 'clsx';
 import { useAuthStore } from '../../store/auth.store';
 
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
-  { to: '/products', label: 'Products', icon: Package, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
-  { to: '/categories', label: 'Categories', icon: Tags, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
-  { to: '/suppliers', label: 'Suppliers', icon: Truck, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
-  { to: '/stock', label: 'Stock', icon: ArrowLeftRight, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
-  { to: '/purchase-orders', label: 'Purchase Orders', icon: ShoppingCart, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
-  { to: '/reports', label: 'Reports', icon: BarChart2, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
-  { to: '/users', label: 'Users', icon: Users, roles: ['ADMIN'] },
+  { to: '/', label: 'Gösterge Paneli', icon: LayoutDashboard, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
+  { to: '/products', label: 'Ürünler', icon: Package, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
+  { to: '/categories', label: 'Kategoriler', icon: Tags, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
+  { to: '/suppliers', label: 'Tedarikçiler', icon: Truck, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
+  { to: '/stock', label: 'Stok', icon: ArrowLeftRight, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
+  { to: '/purchase-orders', label: 'Satın Alma', icon: ShoppingCart, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
+  { to: '/reports', label: 'Raporlar', icon: BarChart2, roles: ['ADMIN', 'MANAGER', 'STAFF'] },
+  { to: '/users', label: 'Kullanıcılar', icon: Users, roles: ['ADMIN'] },
 ];
 
 export function Sidebar() {
@@ -31,7 +31,7 @@ export function Sidebar() {
     <aside className="fixed inset-y-0 left-0 w-64 bg-gray-900 text-white flex flex-col z-10">
       <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-700">
         <AlertTriangle className="w-7 h-7 text-blue-400" />
-        <span className="text-lg font-bold tracking-tight">Inventory</span>
+        <span className="text-lg font-bold tracking-tight">Stok Yönetimi</span>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">

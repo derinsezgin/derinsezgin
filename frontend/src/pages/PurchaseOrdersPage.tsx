@@ -21,14 +21,14 @@ const statusColors: Record<PurchaseOrderStatus, string> = {
 };
 
 const createSchema = z.object({
-  supplierId: z.string().min(1, 'Supplier required'),
+  supplierId: z.string().min(1, 'Tedarikçi gerekli'),
   expectedDate: z.string().optional(),
   notes: z.string().optional(),
   items: z.array(z.object({
-    productId: z.string().min(1, 'Product required'),
+    productId: z.string().min(1, 'Ürün gerekli'),
     orderedQuantity: z.coerce.number().positive(),
     unitPrice: z.coerce.number().min(0),
-  })).min(1, 'Add at least one item'),
+  })).min(1, 'En az bir kalem ekleyin'),
 });
 
 type CreateForm = z.infer<typeof createSchema>;
@@ -77,7 +77,7 @@ export function PurchaseOrdersPage() {
       }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['purchase-orders'] });
-      toast.success('Purchase order created');
+      toast.success('Satın alma siparişi oluşturuldu');
       setShowModal(false);
       reset();
     },
@@ -89,9 +89,9 @@ export function PurchaseOrdersPage() {
       purchaseOrdersApi.updateStatus(id, status),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['purchase-orders'] });
-      toast.success('Status updated');
+      toast.success('Durum güncellendi');
     },
-    onError: () => toast.error('Failed to update status'),
+    onError: () => toast.error('Durum güncellenemedi'),
   });
 
   const receiveMutation = useMutation({
@@ -100,28 +100,28 @@ export function PurchaseOrdersPage() {
       qc.invalidateQueries({ queryKey: ['purchase-orders'] });
       qc.invalidateQueries({ queryKey: ['stock-movements'] });
       qc.invalidateQueries({ queryKey: ['products'] });
-      toast.success('Order received — stock updated');
+      toast.success('Sipariş teslim alındı — stok güncellendi');
       setDetailOrder(null);
     },
     onError: (err: unknown) => toast.error((err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Error'),
   });
 
   const statuses: Array<{ value: string; label: string }> = [
-    { value: '', label: 'All' },
-    { value: 'DRAFT', label: 'Draft' },
-    { value: 'SENT', label: 'Sent' },
-    { value: 'PARTIAL', label: 'Partial' },
-    { value: 'RECEIVED', label: 'Received' },
-    { value: 'CANCELLED', label: 'Cancelled' },
+    { value: '', label: 'Tümü' },
+    { value: 'DRAFT', label: 'Taslak' },
+    { value: 'SENT', label: 'Gönderildi' },
+    { value: 'PARTIAL', label: 'Kısmi' },
+    { value: 'RECEIVED', label: 'Teslim Alındı' },
+    { value: 'CANCELLED', label: 'İptal Edildi' },
   ];
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Purchase Orders</h1>
+        <h1 className="text-2xl font-bold">Satın Alma Siparişleri</h1>
         {isAdminOrManager && (
           <button onClick={() => { reset({ items: [{ productId: '', orderedQuantity: 1, unitPrice: 0 }] }); setShowModal(true); }} className="btn-primary">
-            <Plus className="w-4 h-4" /> New Order
+            <Plus className="w-4 h-4" /> Yeni Sipariş
           </button>
         )}
       </div>
@@ -149,12 +149,12 @@ export function PurchaseOrdersPage() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
               <tr>
-                <th className="px-4 py-3 text-left">Order #</th>
-                <th className="px-4 py-3 text-left">Supplier</th>
-                <th className="px-4 py-3 text-center">Status</th>
-                <th className="px-4 py-3 text-left">Order Date</th>
-                <th className="px-4 py-3 text-left">Expected</th>
-                <th className="px-4 py-3 text-right">Items</th>
+                <th className="px-4 py-3 text-left">Sipariş No</th>
+                <th className="px-4 py-3 text-left">Tedarikçi</th>
+                <th className="px-4 py-3 text-center">Durum</th>
+                <th className="px-4 py-3 text-left">Sipariş Tarihi</th>
+                <th className="px-4 py-3 text-left">Beklenen</th>
+                <th className="px-4 py-3 text-right">Kalemler</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -180,7 +180,7 @@ export function PurchaseOrdersPage() {
                       <button
                         onClick={() => setDetailOrder(o)}
                         className="p-1.5 hover:bg-blue-50 rounded text-blue-600"
-                        title="View"
+                        title="Görüntüle"
                       >
                         <Eye className="w-3.5 h-3.5" />
                       </button>
@@ -188,7 +188,7 @@ export function PurchaseOrdersPage() {
                         <button
                           onClick={() => statusMutation.mutate({ id: o.id, status: 'SENT' })}
                           className="p-1.5 hover:bg-green-50 rounded text-green-600"
-                          title="Mark as Sent"
+                          title="Gönderildi Olarak İşaretle"
                         >
                           <Check className="w-3.5 h-3.5" />
                         </button>
@@ -197,7 +197,7 @@ export function PurchaseOrdersPage() {
                         <button
                           onClick={() => receiveMutation.mutate(o.id)}
                           className="p-1.5 hover:bg-green-50 rounded text-green-600"
-                          title="Receive"
+                          title="Teslim Al"
                         >
                           <Truck className="w-3.5 h-3.5" />
                         </button>
@@ -205,10 +205,10 @@ export function PurchaseOrdersPage() {
                       {isAdminOrManager && (o.status === 'DRAFT' || o.status === 'SENT') && (
                         <button
                           onClick={() => {
-                            if (confirm('Cancel this order?')) statusMutation.mutate({ id: o.id, status: 'CANCELLED' });
+                            if (confirm('Bu siparişi iptal etmek istiyor musunuz?')) statusMutation.mutate({ id: o.id, status: 'CANCELLED' });
                           }}
                           className="p-1.5 hover:bg-red-50 rounded text-red-600"
-                          title="Cancel"
+                          title="İptal"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
@@ -218,7 +218,7 @@ export function PurchaseOrdersPage() {
                 </tr>
               ))}
               {!data?.data.length && (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-400">No orders found.</td></tr>
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-400">Sipariş bulunamadı.</td></tr>
               )}
             </tbody>
           </table>
@@ -242,15 +242,15 @@ export function PurchaseOrdersPage() {
               </div>
               <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
                 <div>
-                  <p className="text-gray-500">Supplier</p>
+                  <p className="text-gray-500">Tedarikçi</p>
                   <p className="font-medium">{detailOrder.supplier?.name}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500">Status</p>
+                  <p className="text-gray-500">Durum</p>
                   <span className={statusColors[detailOrder.status]}>{detailOrder.status}</span>
                 </div>
                 <div>
-                  <p className="text-gray-500">Order Date</p>
+                  <p className="text-gray-500">Sipariş Tarihi</p>
                   <p>{format(new Date(detailOrder.orderDate), 'dd MMM yyyy')}</p>
                 </div>
                 <div>
@@ -264,11 +264,11 @@ export function PurchaseOrdersPage() {
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
                   <tr>
-                    <th className="px-3 py-2 text-left">Product</th>
-                    <th className="px-3 py-2 text-right">Ordered</th>
-                    <th className="px-3 py-2 text-right">Received</th>
-                    <th className="px-3 py-2 text-right">Unit Price</th>
-                    <th className="px-3 py-2 text-right">Total</th>
+                    <th className="px-3 py-2 text-left">Ürün</th>
+                    <th className="px-3 py-2 text-right">Sipariş Edilen</th>
+                    <th className="px-3 py-2 text-right">Teslim Alınan</th>
+                    <th className="px-3 py-2 text-right">Birim Fiyatı</th>
+                    <th className="px-3 py-2 text-right">Toplam</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -284,7 +284,7 @@ export function PurchaseOrdersPage() {
                 </tbody>
               </table>
               <div className="mt-4 text-right font-bold">
-                Total: {detailOrder.items?.reduce((s, i) => s + Number(i.totalPrice), 0).toFixed(2)} ₺
+                Toplam: {detailOrder.items?.reduce((s, i) => s + Number(i.totalPrice), 0).toFixed(2)} ₺
               </div>
             </div>
           </div>
@@ -296,7 +296,7 @@ export function PurchaseOrdersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
             <div className="p-6">
-              <h2 className="text-lg font-bold mb-4">New Purchase Order</h2>
+              <h2 className="text-lg font-bold mb-4">Yeni Satın Alma Siparişi</h2>
               <form onSubmit={handleSubmit((d) => createMutation.mutate(d))} className="space-y-4">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -328,7 +328,7 @@ export function PurchaseOrdersPage() {
                       onClick={() => append({ productId: '', orderedQuantity: 1, unitPrice: 0 })}
                       className="text-xs text-blue-600 hover:underline"
                     >
-                      + Add item
+                      + Kalem ekle
                     </button>
                   </div>
                   {errors.items?.root && <p className="text-xs text-red-600 mb-1">{errors.items.root.message}</p>}
@@ -349,7 +349,7 @@ export function PurchaseOrdersPage() {
                             type="number"
                             step="0.001"
                             className="input text-xs"
-                            placeholder="Qty"
+                            placeholder="Miktar"
                           />
                         </div>
                         <div className="col-span-3">
@@ -358,7 +358,7 @@ export function PurchaseOrdersPage() {
                             type="number"
                             step="0.01"
                             className="input text-xs"
-                            placeholder="Unit price"
+                            placeholder="Birim fiyatı"
                           />
                         </div>
                         <div className="col-span-1">
@@ -378,10 +378,10 @@ export function PurchaseOrdersPage() {
                 </div>
 
                 <div className="flex gap-3 pt-2">
-                  <button type="button" onClick={() => { setShowModal(false); reset(); }} className="btn-secondary flex-1">Cancel</button>
+                  <button type="button" onClick={() => { setShowModal(false); reset(); }} className="btn-secondary flex-1">İptal</button>
                   <button type="submit" disabled={createMutation.isPending} className="btn-primary flex-1">
                     {createMutation.isPending ? <Spinner className="w-4 h-4" /> : null}
-                    Create Order
+                    Sipariş Oluştur
                   </button>
                 </div>
               </form>

@@ -10,8 +10,8 @@ import { PageSpinner, Spinner } from '../components/ui/Spinner';
 import type { Category } from '../types';
 
 const schema = z.object({
-  name: z.string().min(1, 'Name required'),
-  slug: z.string().min(1, 'Slug required').regex(/^[a-z0-9-]+$/, 'Only lowercase letters, numbers, hyphens'),
+  name: z.string().min(1, 'İsim gerekli'),
+  slug: z.string().min(1, 'Slug gerekli').regex(/^[a-z0-9-]+$/, 'Sadece küçük harf, rakam ve tire kullanın'),
   description: z.string().optional(),
   parentId: z.string().optional(),
 });
@@ -35,7 +35,7 @@ function CategoryRow({ cat, depth, onEdit, onDelete }: {
           <p className="text-xs text-gray-400 pl-4" style={{ paddingLeft: (depth * 20) + 16 }}>{cat.slug}</p>
         </td>
         <td className="px-4 py-3 text-sm text-gray-600">{cat.description ?? '—'}</td>
-        <td className="px-4 py-3 text-sm text-gray-400">{cat.children?.length ?? 0} subcategories</td>
+        <td className="px-4 py-3 text-sm text-gray-400">{cat.children?.length ?? 0} alt kategori</td>
         <td className="px-4 py-3">
           <div className="flex items-center gap-2 justify-end">
             <button onClick={() => onEdit(cat)} className="p-1.5 hover:bg-blue-50 rounded text-blue-600">
@@ -70,20 +70,20 @@ export function CategoriesPage() {
 
   const createMutation = useMutation({
     mutationFn: (data: FormData) => categoriesApi.create({ ...data, parentId: data.parentId || undefined }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['categories'] }); toast.success('Created'); closeModal(); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['categories'] }); toast.success('Oluşturuldu'); closeModal(); },
     onError: (err: unknown) => toast.error((err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Error'),
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<FormData> }) =>
       categoriesApi.update(id, { ...data, parentId: data.parentId || undefined }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['categories'] }); toast.success('Updated'); closeModal(); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['categories'] }); toast.success('Güncellendi'); closeModal(); },
     onError: (err: unknown) => toast.error((err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Error'),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => categoriesApi.delete(id),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['categories'] }); toast.success('Deleted'); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['categories'] }); toast.success('Silindi'); },
     onError: (err: unknown) => toast.error((err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Error'),
   });
 
@@ -92,7 +92,7 @@ export function CategoriesPage() {
   function closeModal() { setShowModal(false); setEditing(null); reset(); }
 
   function handleDelete(id: string, name: string) {
-    if (confirm(`Delete category "${name}"?`)) deleteMutation.mutate(id);
+    if (confirm(`"${name}" kategorisi silinsin mi?`)) deleteMutation.mutate(id);
   }
 
   function onSubmit(data: FormData) {
@@ -113,9 +113,9 @@ export function CategoriesPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Categories</h1>
+        <h1 className="text-2xl font-bold">Kategoriler</h1>
         <button onClick={openCreate} className="btn-primary">
-          <Plus className="w-4 h-4" /> Add Category
+          <Plus className="w-4 h-4" /> Kategori Ekle
         </button>
       </div>
 
@@ -126,9 +126,9 @@ export function CategoriesPage() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
               <tr>
-                <th className="px-4 py-3 text-left">Name / Slug</th>
-                <th className="px-4 py-3 text-left">Description</th>
-                <th className="px-4 py-3 text-left">Children</th>
+                <th className="px-4 py-3 text-left">İsim / Slug</th>
+                <th className="px-4 py-3 text-left">Açıklama</th>
+                <th className="px-4 py-3 text-left">Alt Kategoriler</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -137,7 +137,7 @@ export function CategoriesPage() {
                 <CategoryRow key={c.id} cat={c} depth={0} onEdit={openEdit} onDelete={handleDelete} />
               ))}
               {!categories?.length && (
-                <tr><td colSpan={4} className="px-4 py-8 text-center text-gray-400">No categories yet.</td></tr>
+                <tr><td colSpan={4} className="px-4 py-8 text-center text-gray-400">Henüz kategori yok.</td></tr>
               )}
             </tbody>
           </table>
@@ -148,7 +148,7 @@ export function CategoriesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
             <div className="p-6">
-              <h2 className="text-lg font-bold mb-4">{editing ? 'Edit Category' : 'New Category'}</h2>
+              <h2 className="text-lg font-bold mb-4">{editing ? 'Kategoriyi Düzenle' : 'Yeni Kategori'}</h2>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
@@ -161,7 +161,7 @@ export function CategoriesPage() {
                   {errors.slug && <p className="text-xs text-red-600 mt-0.5">{errors.slug.message}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Açıklama</label>
                   <textarea {...register('description')} className="input" rows={2} />
                 </div>
                 <div>
@@ -176,10 +176,10 @@ export function CategoriesPage() {
                   </select>
                 </div>
                 <div className="flex gap-3 pt-2">
-                  <button type="button" onClick={closeModal} className="btn-secondary flex-1">Cancel</button>
+                  <button type="button" onClick={closeModal} className="btn-secondary flex-1">İptal</button>
                   <button type="submit" disabled={createMutation.isPending || updateMutation.isPending} className="btn-primary flex-1">
                     {(createMutation.isPending || updateMutation.isPending) ? <Spinner className="w-4 h-4" /> : null}
-                    {editing ? 'Update' : 'Create'}
+                    {editing ? 'Güncelle' : 'Oluştur'}
                   </button>
                 </div>
               </form>

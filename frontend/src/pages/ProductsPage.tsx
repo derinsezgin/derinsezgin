@@ -11,8 +11,8 @@ import { Pagination } from '../components/ui/Pagination';
 import type { Product } from '../types';
 
 const schema = z.object({
-  sku: z.string().min(1, 'SKU required'),
-  name: z.string().min(1, 'Name required'),
+  sku: z.string().min(1, 'SKU gerekli'),
+  name: z.string().min(1, 'İsim gerekli'),
   barcode: z.string().optional(),
   description: z.string().optional(),
   categoryId: z.string().optional(),
@@ -58,7 +58,7 @@ export function ProductsPage() {
     mutationFn: (data: FormData) => productsApi.create(data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['products'] });
-      toast.success('Product created');
+      toast.success('Ürün oluşturuldu');
       setShowModal(false);
       reset();
     },
@@ -73,7 +73,7 @@ export function ProductsPage() {
       productsApi.update(id, data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['products'] });
-      toast.success('Product updated');
+      toast.success('Ürün güncellendi');
       setShowModal(false);
       setEditing(null);
       reset();
@@ -88,7 +88,7 @@ export function ProductsPage() {
     mutationFn: (id: string) => productsApi.delete(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['products'] });
-      toast.success('Product deleted');
+      toast.success('Ürün silindi');
     },
     onError: (err: unknown) => {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Error';
@@ -139,10 +139,10 @@ export function ProductsPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Products</h1>
+        <h1 className="text-2xl font-bold">Ürünler</h1>
         <button onClick={openCreate} className="btn-primary">
           <Plus className="w-4 h-4" />
-          Add Product
+          Ürün Ekle
         </button>
       </div>
 
@@ -150,7 +150,7 @@ export function ProductsPage() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
         <input
           className="input pl-9"
-          placeholder="Search by name, SKU, barcode..."
+          placeholder="İsim, SKU veya barkod ile ara..."
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
         />
@@ -163,11 +163,11 @@ export function ProductsPage() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
               <tr>
-                <th className="px-4 py-3 text-left">SKU / Name</th>
-                <th className="px-4 py-3 text-left">Category</th>
-                <th className="px-4 py-3 text-right">Stock</th>
-                <th className="px-4 py-3 text-right">Cost / Selling</th>
-                <th className="px-4 py-3 text-center">Status</th>
+                <th className="px-4 py-3 text-left">SKU / İsim</th>
+                <th className="px-4 py-3 text-left">Kategori</th>
+                <th className="px-4 py-3 text-right">Stok</th>
+                <th className="px-4 py-3 text-right">Maliyet / Satış</th>
+                <th className="px-4 py-3 text-center">Durum</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -195,7 +195,7 @@ export function ProductsPage() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span className={p.isActive ? 'badge-green' : 'badge-gray'}>
-                        {p.isActive ? 'Active' : 'Inactive'}
+                        {p.isActive ? 'Aktif' : 'Pasif'}
                       </span>
                     </td>
                     <td className="px-4 py-3">
@@ -208,7 +208,7 @@ export function ProductsPage() {
                         </button>
                         <button
                           onClick={() => {
-                            if (confirm(`Delete "${p.name}"?`)) deleteMutation.mutate(p.id);
+                            if (confirm(`"${p.name}" silinsin mi?`)) deleteMutation.mutate(p.id);
                           }}
                           className="p-1.5 hover:bg-red-50 rounded text-red-600"
                         >
@@ -222,7 +222,7 @@ export function ProductsPage() {
               {!data?.data.length && (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
-                    No products found.
+                    Ürün bulunamadı.
                   </td>
                 </tr>
               )}
@@ -245,7 +245,7 @@ export function ProductsPage() {
           <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-xl">
             <div className="p-6">
               <h2 className="text-lg font-bold mb-4">
-                {editing ? 'Edit Product' : 'New Product'}
+                {editing ? 'Ürünü Düzenle' : 'Yeni Ürün'}
               </h2>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
@@ -259,25 +259,25 @@ export function ProductsPage() {
                     {errors.sku && <p className="text-xs text-red-600 mt-0.5">{errors.sku.message}</p>}
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Barcode</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Barkod</label>
                     <input {...register('barcode')} className="input" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">İsim *</label>
                   <input {...register('name')} className="input" />
                   {errors.name && <p className="text-xs text-red-600 mt-0.5">{errors.name.message}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Açıklama</label>
                   <textarea {...register('description')} className="input" rows={2} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Category</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Kategori</label>
                     <select {...register('categoryId')} className="input">
                       <option value="">— None —</option>
                       {categories?.map((c) => (
@@ -286,7 +286,7 @@ export function ProductsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Supplier</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Tedarikçi</label>
                     <select {...register('supplierId')} className="input">
                       <option value="">— None —</option>
                       {suppliers?.map((s) => (
@@ -298,21 +298,21 @@ export function ProductsPage() {
 
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Cost Price</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Maliyet Fiyatı</label>
                     <input {...register('costPrice')} type="number" step="0.01" className="input" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Selling Price</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Satış Fiyatı</label>
                     <input {...register('unitPrice')} type="number" step="0.01" className="input" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Unit</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Birim</label>
                     <input {...register('unit')} className="input" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Min Stock Level</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Min. Stok Seviyesi</label>
                   <input {...register('minStockLevel')} type="number" step="0.001" className="input" />
                 </div>
 
@@ -322,11 +322,11 @@ export function ProductsPage() {
                     onClick={() => { setShowModal(false); setEditing(null); reset(); }}
                     className="btn-secondary flex-1"
                   >
-                    Cancel
+                    İptal
                   </button>
                   <button type="submit" disabled={isMutating} className="btn-primary flex-1">
                     {isMutating ? <Spinner className="w-4 h-4" /> : null}
-                    {editing ? 'Update' : 'Create'}
+                    {editing ? 'Güncelle' : 'Oluştur'}
                   </button>
                 </div>
               </form>

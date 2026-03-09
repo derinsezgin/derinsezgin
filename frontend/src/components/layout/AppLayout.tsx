@@ -19,15 +19,15 @@ export function AppLayout() {
           <div />
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-600">
-              Welcome, <strong>{user?.name}</strong>
+              Hoş geldiniz, <strong>{user?.name}</strong>
             </span>
             <button
               onClick={logout}
               className="btn-secondary text-xs py-1.5 px-3"
-              title="Logout"
+              title="Çıkış Yap"
             >
               <LogOut className="w-3.5 h-3.5" />
-              Logout
+              Çıkış Yap
             </button>
           </div>
         </header>

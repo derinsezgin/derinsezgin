@@ -24,7 +24,7 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
       </button>
 
       <span className="text-sm text-gray-600">
-        Page {page} of {totalPages}
+        Sayfa {page} / {totalPages}
       </span>
 
       <button

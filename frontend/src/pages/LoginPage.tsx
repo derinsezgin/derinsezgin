@@ -7,8 +7,8 @@ import { useAuthStore } from '../store/auth.store';
 import { Spinner } from '../components/ui/Spinner';
 
 const schema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(1, 'Password required'),
+  email: z.string().email('Geçersiz e-posta'),
+  password: z.string().min(1, 'Şifre gerekli'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -28,12 +28,12 @@ export function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Inventory System</h1>
-        <p className="text-sm text-gray-500 mb-6">Sign in to your account</p>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Stok Yönetim Sistemi</h1>
+        <p className="text-sm text-gray-500 mb-6">Hesabınıza giriş yapın</p>
 
         <form onSubmit={handleSubmit((data) => login.mutate(data))} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
             <input
               {...register('email')}
               type="email"
@@ -45,7 +45,7 @@ export function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
             <input
               {...register('password')}
               type="password"
@@ -64,12 +64,12 @@ export function LoginPage() {
             className="btn-primary w-full"
           >
             {login.isPending ? <Spinner className="w-4 h-4" /> : null}
-            Sign In
+            Giriş Yap
           </button>
         </form>
 
         <p className="mt-4 text-xs text-center text-gray-400">
-          Default: admin@inventory.com / admin123
+          Varsayılan: admin@inventory.com / admin123
         </p>
       </div>
     </div>

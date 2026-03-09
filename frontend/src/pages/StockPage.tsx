@@ -12,9 +12,9 @@ import type { StockMovementType } from '../types';
 import { format } from 'date-fns';
 
 const movementSchema = z.object({
-  productId: z.string().min(1, 'Product required'),
+  productId: z.string().min(1, 'Ürün gerekli'),
   type: z.enum(['IN', 'OUT', 'ADJUSTMENT', 'RETURN']),
-  quantity: z.coerce.number().positive('Must be positive'),
+  quantity: z.coerce.number().positive('Pozitif sayı olmalıdır'),
   unitPrice: z.coerce.number().min(0).optional(),
   reference: z.string().optional(),
   notes: z.string().optional(),
@@ -71,7 +71,7 @@ export function StockPage() {
       qc.invalidateQueries({ queryKey: ['stock-movements'] });
       qc.invalidateQueries({ queryKey: ['products'] });
       qc.invalidateQueries({ queryKey: ['dashboard'] });
-      toast.success('Movement recorded');
+      toast.success('Hareket kaydedildi');
       setShowModal(false);
       reset();
     },
@@ -84,9 +84,9 @@ export function StockPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Stock Movements</h1>
+        <h1 className="text-2xl font-bold">Stok Hareketleri</h1>
         <button onClick={() => { reset({ type: 'IN' }); setShowModal(true); }} className="btn-primary">
-          Record Movement
+          Hareket Kaydet
         </button>
       </div>
 
@@ -101,7 +101,7 @@ export function StockPage() {
                 : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
             }`}
           >
-            {t || 'All'}
+            {t || 'Tümü'}
           </button>
         ))}
       </div>
@@ -113,12 +113,12 @@ export function StockPage() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
               <tr>
-                <th className="px-4 py-3 text-left">Product</th>
-                <th className="px-4 py-3 text-center">Type</th>
-                <th className="px-4 py-3 text-right">Qty</th>
-                <th className="px-4 py-3 text-left">Reference</th>
-                <th className="px-4 py-3 text-left">By</th>
-                <th className="px-4 py-3 text-left">Date</th>
+                <th className="px-4 py-3 text-left">Ürün</th>
+                <th className="px-4 py-3 text-center">Tür</th>
+                <th className="px-4 py-3 text-right">Miktar</th>
+                <th className="px-4 py-3 text-left">Referans</th>
+                <th className="px-4 py-3 text-left">Yapan</th>
+                <th className="px-4 py-3 text-left">Tarih</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -148,7 +148,7 @@ export function StockPage() {
                 );
               })}
               {!data?.data.length && (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400">No movements found.</td></tr>
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400">Hareket bulunamadı.</td></tr>
               )}
             </tbody>
           </table>
@@ -163,7 +163,7 @@ export function StockPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
             <div className="p-6">
-              <h2 className="text-lg font-bold mb-4">Record Stock Movement</h2>
+              <h2 className="text-lg font-bold mb-4">Stok Hareketi Kaydet</h2>
               <form onSubmit={handleSubmit((d) => createMovement.mutate(d))} className="space-y-3">
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">Product *</label>
@@ -172,7 +172,7 @@ export function StockPage() {
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <input
                         className="input pl-9"
-                        placeholder="Search product..."
+                        placeholder="Ürün ara..."
                         value={productSearch}
                         onChange={(e) => setProductSearch(e.target.value)}
                       />
@@ -182,7 +182,7 @@ export function StockPage() {
                     <option value="">— Select product —</option>
                     {products?.map((p) => (
                       <option key={p.id} value={p.id}>
-                        {p.name} ({p.sku}) — Stock: {Number(p.currentStock)} {p.unit}
+                        {p.name} ({p.sku}) — Stok: {Number(p.currentStock)} {p.unit}
                       </option>
                     ))}
                   </select>
@@ -201,7 +201,7 @@ export function StockPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      {watch('type') === 'ADJUSTMENT' ? 'New Stock Quantity (absolute) *' : 'Quantity *'}
+                      {watch('type') === 'ADJUSTMENT' ? 'Yeni Stok Miktarı (mutlak) *' : 'Miktar *'}
                     </label>
                     <input {...register('quantity')} type="number" step="0.001" min="0" className="input" />
                     {errors.quantity && <p className="text-xs text-red-600 mt-0.5">{errors.quantity.message}</p>}
@@ -214,7 +214,7 @@ export function StockPage() {
                     <input {...register('unitPrice')} type="number" step="0.01" className="input" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Reference</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Referans</label>
                     <input {...register('reference')} className="input" />
                   </div>
                 </div>
@@ -225,7 +225,7 @@ export function StockPage() {
                 </div>
 
                 <div className="flex gap-3 pt-2">
-                  <button type="button" onClick={() => { setShowModal(false); reset(); }} className="btn-secondary flex-1">Cancel</button>
+                  <button type="button" onClick={() => { setShowModal(false); reset(); }} className="btn-secondary flex-1">İptal</button>
                   <button type="submit" disabled={createMovement.isPending} className="btn-primary flex-1">
                     {createMovement.isPending ? <Spinner className="w-4 h-4" /> : null}
                     Record
